@@ -26,5 +26,10 @@ Route::delete('deleteKey/{redisKey}',[
     'as' => 'deleteKey',
     'uses' => 'IndexController@deleteKey'
 ]);
+Route::delete('flushDB/{dbNum}',[
+    'as' => 'flushDB',
+    'uses' => 'IndexController@flushDB'
+]);
+
 
 Route::get('/test','IndexController@test');

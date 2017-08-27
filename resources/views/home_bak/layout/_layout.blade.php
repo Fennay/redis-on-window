@@ -38,6 +38,11 @@ License: You must have a valid license purchased only from themeforest(the above
 	<link href="/resources/assets/global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
 	<link href="/resources/assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet"
 		  type="text/css"/>
+	<!-- modal css-->
+	<link href="/resources/assets/global/plugins/bootstrap-modal/css/bootstrap-modal-bs3patch.css" rel="stylesheet"
+		  type="text/css"/>
+	<link href="/resources/assets/global/plugins/bootstrap-modal/css/bootstrap-modal.css" rel="stylesheet"
+		  type="text/css"/>
 	<!-- END GLOBAL MANDATORY STYLES -->
 	<!-- BEGIN PAGE LEVEL PLUGINS -->
 	@yield('page_css')
@@ -152,7 +157,7 @@ License: You must have a valid license purchased only from themeforest(the above
 <!-- BEGIN CONTAINER -->
 <div class="page-container">
 	<!-- BEGIN SIDEBAR -->
-@include('home.layout.sidebar')
+@include('home_bak.layout.sidebar')
 <!-- END SIDEBAR -->
 	<div class="page-content-wrapper">
 		<!-- BEGIN CONTENT BODY -->
@@ -211,6 +216,13 @@ License: You must have a valid license purchased only from themeforest(the above
 <script src="/resources/assets/layouts/global/scripts/quick-sidebar.min.js" type="text/javascript"></script>
 <script src="/resources/assets/layouts/global/scripts/quick-nav.min.js" type="text/javascript"></script>
 <!-- END THEME LAYOUT SCRIPTS -->
+
+<!-- modal js-->
+<script src="/resources/assets/global/plugins/bootstrap-modal/js/bootstrap-modalmanager.js"
+		type="text/javascript"></script>
+<script src="/resources/assets/global/plugins/bootstrap-modal/js/bootstrap-modal.js"
+		type="text/javascript"></script>
+<script src="/resources/assets/pages/scripts/ui-extended-modals.min.js" type="text/javascript"></script>
 
 @yield('page_js')
 </body>

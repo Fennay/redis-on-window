@@ -1,101 +1,74 @@
-@extends('home.layout._layout')
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<title>Redis on windows</title>
+	<link rel="stylesheet" type="text/css" href="http://apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="resources/home/css/redis.css">
 
-@section('page_css')
-	<link href="/resources/assets/pages/css/profile.min.css" rel="stylesheet" type="text/css"/>
-@endsection
+	<script type="text/javascript" src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+	<script type="text/javascript" src="http://apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div class="container-fluid">
+	<div class="row header">
+		这里是头部
+	</div>
+	<!-- <hr /> -->
 
-@section('main')
-	<div class="page-content">
-		<div class="page-head">
-			<div class="page-title">
-				<h1>Redis On Window
-					<small>简单, 直观, 便利</small>
-				</h1>
-			</div>
-		</div>
-		<ul class="page-breadcrumb breadcrumb"></ul>
-		<div class="row">
-			<div class="col-md-12">
-				<div class="portlet box red">
-					<div class="portlet-title">
-						<div class="caption">
-							<i class="fa fa-cogs"></i>服务器信息</div>
-						<div class="tools">
-							<a href="javascript:;" class="collapse"> </a>
-							<a href="javascript:;" class="reload"> </a>
-							<a href="javascript:;" class="remove"> </a>
-						</div>
+	<div class="row">
+		<!-- <div class="col-md-1"></div> -->
+		<div class="col-md-2">
+			<div class="panel-group" id="accordion">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h4 class="panel-title">
+							<a data-toggle="collapse" data-parent="#accordion"
+							   href="#collapseOne">
+								数据库名称（ip）
+							</a>
+						</h4>
 					</div>
-					<div class="portlet-body flip-scroll">
-						<table class="table table-bordered table-striped table-condensed flip-content">
-								<thead class="flip-content"></thead>
-								<tr>
-									<td> Redis版本</td>
-									<td> {{$info['Server']['redis_version']}}</td>
-								</tr>
-								<tr>
-									<td> Redis端口号</td>
-									<td> {{$info['Server']['tcp_port']}}</td>
-								</tr>
-								<tr>
-									<td> Redis配置文件</td>
-									<td> {{$info['Server']['config_file']}}</td>
-								</tr>
-								<tr>
-									<td> 客户端连接数</td>
-									<td> {{$info['Clients']['connected_clients']}}</td>
-								</tr>
-								<tr>
-									<td> 角色</td>
-									<td> {{$info['Replication']['role']}}</td>
-								</tr>
-						</table>
+					<div id="collapseOne" class="panel-collapse collapse in">
+						<div class="panel-body">
+							<ul class="dbIndex">
+								@foreach($info['Keyspace'] as $k => $v)
+									<li>
+										<a href="{{route('selectDB',['dbIndex' => mb_substr($k,2,2)])}}" title="查看keys">{{$k}}</a>
+										<a href="javascript:;" title="清空数据库"> <i class="glyphicon glyphicon-trash"></i></a>
+									</li>
+								@endforeach
+
+							</ul>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-		<div class="row">
-			<div class="col-md-12">
-				<div class="portlet box green">
-					<div class="portlet-title">
-						<div class="caption">
-							<i class="fa fa-cogs"></i>数据库信息</div>
-						<div class="tools">
-							<a href="javascript:;" class="collapse"> </a>
-							<a href="javascript:;" class="reload"> </a>
-							<a href="javascript:;" class="remove"> </a>
-						</div>
-					</div>
-					<div class="portlet-body flip-scroll">
-						<table class="table table-bordered table-striped table-condensed flip-content">
-							@foreach($info['Keyspace'] as $k => $v)
-								<thead class="flip-content">
-								<tr>
-									<th width="35%">数据库:【{{$k}}】 <a href="{{route('selectDB',['dbIndex' => mb_substr($k,2,2)])}}" class	="btn btn-outline btn-circle btn-sm purple"><i class="fa fa-share"></i> 查看</a></th>
-									<th></th>
-								</tr>
-								</thead>
-								<tr>
-									<td> keys数量</td>
-									<td> {{$v['keys']}}</td>
-								</tr>
-								<tr>
-									<td> 过期时间</td>
-									<td> {{$v['expires']}}</td>
-								</tr>
-								<tr>
-									<td> 平均过期时间</td>
-									<td> {{$v['avg_ttl']}}</td>
-								</tr>
-							@endforeach
-						</table>
-					</div>
-				</div>
+		<div class="col-md-10">
+			<div class="list-group">
+				<a href="javascript:;" class="list-group-item"> keys </a>
+				@foreach($keys as $key => $v)
+				<a href="#" class="list-group-item">
+					{!! getRedisTypeByKey($key) !!}&nbsp;
+					<span class="label label-sm label-danger label-mini"> {{getRedisTtlByKey($key)}} </span>&nbsp;
+					{{$key}}
+				</a>
+				@endforeach
 			</div>
+		</div>
+		<div class="col-md-7 redis-value">
+			<div class="redis-content">
+				<h4 class="panel-title">
+					value
+				</h4>
+			</div>
+
 		</div>
 	</div>
-@endsection
 
-@section('page_js')
+	<div class="row">
 
-@endsection
+	</div>
+</div>
+</body>
+</html>

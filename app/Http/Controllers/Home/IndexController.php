@@ -9,7 +9,6 @@
 
 namespace App\Http\Controllers\Home;
 
-use Illuminate\Http\Request;
 use Mockery\CountValidator\Exception;
 use Redis;
 
@@ -19,9 +18,11 @@ class IndexController extends BaseController
     public function index()
     {
         $info = Redis::info();
+        Redis::select(0);
 
         return view('home.index', [
-            'info' => $info
+            'info' => $info,
+            'keys' => $this->getAllKeysAndValue()
         ]);
     }
 
@@ -48,7 +49,6 @@ class IndexController extends BaseController
      */
     public function deleteKey($redisKey)
     {
-        // $redisKey = Request::input('redisKey');
         $msg = '删除成功';
         try{
             Redis::del($redisKey);
@@ -111,11 +111,13 @@ class IndexController extends BaseController
 
     /**
      * 清除数据库
+     * @param $dbNum
      * @return \Illuminate\Http\JsonResponse
      */
-    public function flushDB()
+    public function flushDB($dbNum)
     {
         try{
+            Redis::select($dbNum);
             Redis::flushDB();
         }catch (Exception $exe){
             return response()->json([
@@ -154,6 +156,8 @@ class IndexController extends BaseController
             'info' => '清除成功'
         ]);
     }
+    
+    
 
 
     public function test()
