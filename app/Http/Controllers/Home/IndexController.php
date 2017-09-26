@@ -9,25 +9,57 @@
 
 namespace App\Http\Controllers\Home;
 
-use Mockery\CountValidator\Exception;
+use Illuminate\Http\Request;
 use Redis;
+use Exception;
+use Predis\Connection\ConnectionException;
 
 class IndexController extends BaseController
 {
+    public function __construct() {
+        // return view('home.connect');
+    }
+
+    public function save(Request $request)
+    {
+        $data = $request->all();
+        dd($data);
+    }
+    
+    public function checkRedis(){
+        try {
+            $rs = Redis::ping();
+        } catch (ConnectionException $exe) {
+            return false;
+        }
+        return true;
+    }
 
     public function index()
     {
-        $info = Redis::info();
-        Redis::select(0);
+
+        $redisList = config('redis');
+
+
+        // Redis::Info();
+
+        // if(!$this->checkRedis()){
+        //     return view('home.connect');
+        // }
+
+        // $info = Redis::info();
+
+        // Redis::select(0);
 
         return view('home.index', [
-            'info' => $info,
-            'keys' => $this->getAllKeysAndValue()
+            // 'info' => $info,
+            // 'keys' => $this->getAllKeysAndValue()
         ]);
     }
 
     /**
      * 选择数据库
+     *
      * @param $dbIndex
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
@@ -44,37 +76,39 @@ class IndexController extends BaseController
 
     /**
      * 通过redisKey删除数据
+     *
      * @param $redisKey
      * @return \Illuminate\Http\JsonResponse
      */
     public function deleteKey($redisKey)
     {
         $msg = '删除成功';
-        try{
+        try {
             Redis::del($redisKey);
             $status = 'success';
-        }catch(Exception $exe){
+        } catch (Exception $exe) {
             $msg = '删除失败';
             $status = 'error';
         }
 
         return response()->json([
-            'data' => ['redisKey' => $redisKey],
+            'data'   => [ 'redisKey' => $redisKey ],
             'status' => $status,
-            'info' => $msg
+            'info'   => $msg
         ]);
     }
 
 
     /**
      * 获取所有的key和值
+     *
      * @return array
      */
     protected function getAllKeysAndValue()
     {
         $keys = Redis::keys('*');
 
-        $returnData = [ ];
+        $returnData = [];
         foreach ($keys as $k => $v) {
 
 
@@ -87,6 +121,7 @@ class IndexController extends BaseController
 
     /**
      * 通过redisKey获取值
+     *
      * @param $key
      * @return bool|string
      */
@@ -96,11 +131,11 @@ class IndexController extends BaseController
 
         switch ($type) {
             case 'string' :
-                $value =  Redis::get($key);
+                $value = Redis::get($key);
                 break;
             case 'zset' :
-                $arr = Redis::zScan($key,null);
-                $value =  implode(',',$arr[1]);
+                $arr = Redis::zScan($key, null);
+                $value = implode(',', $arr[1]);
                 break;
             default :
                 $value = '';
@@ -111,53 +146,53 @@ class IndexController extends BaseController
 
     /**
      * 清除数据库
+     *
      * @param $dbNum
      * @return \Illuminate\Http\JsonResponse
      */
     public function flushDB($dbNum)
     {
-        try{
+        try {
             Redis::select($dbNum);
             Redis::flushDB();
-        }catch (Exception $exe){
+        } catch (Exception $exe) {
             return response()->json([
-                'data' => [],
+                'data'   => [],
                 'status' => 'error',
-                'info' => '清除失败'
+                'info'   => '清除失败'
             ]);
         }
 
         return response()->json([
-            'data' => [],
+            'data'   => [],
             'status' => 'success',
-            'info' => '清除成功'
+            'info'   => '清除成功'
         ]);
     }
 
     /**
      * 清除整个redis
+     *
      * @return \Illuminate\Http\JsonResponse
      */
     public function flushAll()
     {
-        try{
+        try {
             Redis::flushAll();
-        }catch (Exception $exe){
+        } catch (Exception $exe) {
             return response()->json([
-                'data' => [],
+                'data'   => [],
                 'status' => 'error',
-                'info' => '清除失败'
+                'info'   => '清除失败'
             ]);
         }
 
         return response()->json([
-            'data' => [],
+            'data'   => [],
             'status' => 'success',
-            'info' => '清除成功'
+            'info'   => '清除成功'
         ]);
     }
-    
-    
 
 
     public function test()
@@ -171,16 +206,15 @@ class IndexController extends BaseController
         // dump($keys);
 
 
-
         $arr = [
             'username' => 'feng',
-            'age' => 13,
-            'email' => 'feng@fennay.com'
+            'age'      => 13,
+            'email'    => 'feng@fennay.com'
         ];
 
         $str = json_encode($arr);
 
-        $rs = Redis::set('username',$str);
+        $rs = Redis::set('username', $str);
         dump($rs);
         dd($str);
     }

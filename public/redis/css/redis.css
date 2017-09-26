@@ -7,7 +7,7 @@ body{
 	background-color: rgba(229,229,229,0.6);
 }
 .col-md-2, .col-md-10{
-    padding: 0px;
+    padding: 0;
 }
 
 .header{
@@ -23,11 +23,13 @@ body{
 
 .redis-value{
 	position: absolute;
-    right: 0px;
+    right: 0;
 	top: 120px;
 	z-index: 99;
-    width:500px;
+    width:100px;
 }
 .redis-content{
     text-align: left;
+	width:500px;
+	overflow: hidden;
 }

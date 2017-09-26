@@ -11,7 +11,7 @@
 <body>
 <div class="container-fluid">
 	<div class="row header">
-		这里是头部
+		<h1></h1>
 	</div>
 	<!-- <hr /> -->
 
@@ -33,7 +33,8 @@
 							<ul class="dbIndex">
 								@foreach($info['Keyspace'] as $k => $v)
 									<li>
-										<a href="{{route('selectDB',['dbIndex' => mb_substr($k,2,2)])}}" title="查看keys">{{$k}}</a>
+										<a href="{{route('selectDB',['dbIndex' => mb_substr($k,2,2)])}}"
+										   title="查看keys">{{$k}}</a>
 										<a href="javascript:;" title="清空数据库"> <i class="glyphicon glyphicon-trash"></i></a>
 									</li>
 								@endforeach
@@ -45,22 +46,34 @@
 			</div>
 		</div>
 		<div class="col-md-10">
-			<div class="list-group">
+			<div class="list-group redis-key">
 				<a href="javascript:;" class="list-group-item"> keys </a>
-				@foreach($keys as $key => $v)
-				<a href="#" class="list-group-item">
-					{!! getRedisTypeByKey($key) !!}&nbsp;
-					<span class="label label-sm label-danger label-mini"> {{getRedisTtlByKey($key)}} </span>&nbsp;
-					{{$key}}
+				<a href="javascript:;" onclick="showValue()" class="list-group-item">
+					搜索：<input type="text">
 				</a>
+				@foreach($keys as $key => $v)
+					<a href="javascript:;" onclick="showValue()" class="list-group-item">
+						{!! getRedisTypeByKey($key) !!}&nbsp;
+						<span class="label label-sm label-danger label-mini"> {{getRedisTtlByKey($key)}} </span>&nbsp;
+						{{$key}}
+					</a>
 				@endforeach
 			</div>
 		</div>
 		<div class="col-md-7 redis-value">
+			<p>
+				<button type="button" onclick="closeValue()" class="close pull-left" aria-hidden="true">
+					&times;
+				</button>
+				<button type="button" onclick="closeValue()" class="close" aria-hidden="true">
+					&times;
+				</button>
+			</p>
+			<h4 class="redis-title">
+				value
+			</h4>
 			<div class="redis-content">
-				<h4 class="panel-title">
-					value
-				</h4>
+				username
 			</div>
 
 		</div>
@@ -70,5 +83,26 @@
 
 	</div>
 </div>
+
+<script>
+
+	// 值的类
+	var redisValue = $('.redis-value');
+
+	// 修改value高度
+	$(redisValue).css('height',$('.redis-key').css('height'))
+
+
+	function showValue(){
+	    $(redisValue).show();
+	}
+
+    /**
+	 * 关闭值
+     */
+	function closeValue(){
+	    $(redisValue).hide();
+	}
+</script>
 </body>
 </html>

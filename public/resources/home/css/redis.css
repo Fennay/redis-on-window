@@ -1,13 +1,13 @@
 * {
-	margin: 0px;
-	padding: 0px;
+	margin: 0;
+	padding: 0;
 	list-style-type: none;
 }
 body{
 	background-color: rgba(229,229,229,0.6);
 }
 .col-md-2, .col-md-10{
-    padding: 0px;
+    padding: 0;
 }
 
 .header{
@@ -22,9 +22,15 @@ body{
 }
 
 .redis-value{
+	display: none;
 	position: absolute;
-	right: 0px;
-	top: 120px;
+	right: 0;
 	z-index: 99;
-	text-align: right;
+	width:60%;
+	border: 1px solid;
+	background: #959ba2;
+	border-radius: 5px;
+}
+.redis-value .redis-title{
+	text-align: center;
 }
