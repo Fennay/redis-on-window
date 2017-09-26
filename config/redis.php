@@ -7,16 +7,20 @@
  */
 
 return [
-    0 => [
-        'name'     => '公司开发环境redis',
-        'host'     => '127.0.0.1',
-        'password' => '123456',
-        'port'     => 6379,
-    ],
-    1 => [
-        'name'     => 'Mac环境redis',
-        'host'     => '127.0.0.1',
-        'password' => '123456',
-        'port'     => 6379,
-    ],
+
+    'redis' => [
+        'companyDevRedis' => [
+            'title'    => '公司开发环境redis',
+            'host'     => '10.0.4.18',
+            'password' => '123456',
+            'port'     => 6379,
+        ],
+        'testRedis'       => [
+            'title'    => '测试环境',
+            'host'     => '127.0.0.1',
+            'password' => '123456',
+            'port'     => 6379,
+        ]
+
+    ]
 ];

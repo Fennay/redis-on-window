@@ -9,52 +9,49 @@
 
 namespace App\Http\Controllers\Home;
 
-use Illuminate\Http\Request;
+use App\Traits\CommonResponse;
 use Redis;
 use Exception;
 use Predis\Connection\ConnectionException;
+use App\Service\RedisService;
 
 class IndexController extends BaseController
 {
+    use CommonResponse;
+
     public function __construct() {
-        // return view('home.connect');
+
+        //$this->redisObj = new RedisService();
     }
 
-    public function save(Request $request)
-    {
-        $data = $request->all();
-        dd($data);
-    }
-    
-    public function checkRedis(){
-        try {
-            $rs = Redis::ping();
-        } catch (ConnectionException $exe) {
-            return false;
-        }
-        return true;
-    }
+
 
     public function index()
     {
+        $redisList = config('redis')['redis'];
+        unset($redisList['client']);
 
-        $redisList = config('redis');
-
-
-        // Redis::Info();
-
-        // if(!$this->checkRedis()){
-        //     return view('home.connect');
-        // }
-
-        // $info = Redis::info();
-
-        // Redis::select(0);
 
         return view('home.index', [
-            // 'info' => $info,
-            // 'keys' => $this->getAllKeysAndValue()
+             'redisList' => $redisList,
         ]);
+    }
+
+    /**
+     * 切换Redis库
+     * @param $redisName
+     * @return \Illuminate\Http\JsonResponse
+     * @author: Fengguangyong
+     */
+    public function selectRedis($redisName)
+    {
+        $redisList = config('redis')['redis'];
+        $redisOption = $redisList[$redisName];
+
+        $redis = new RedisService($redisOption);
+        $keys = $redis->getAllKeysAndType();
+
+        return $this->ajaxSuccess('获取成功',$keys);
     }
 
     /**
@@ -65,9 +62,6 @@ class IndexController extends BaseController
      */
     public function selectDB($dbIndex)
     {
-        // 切换数据库
-        Redis::select($dbIndex);
-
         return view('home.db', [
             'keys' => $this->getAllKeysAndValue()
         ]);
@@ -80,23 +74,23 @@ class IndexController extends BaseController
      * @param $redisKey
      * @return \Illuminate\Http\JsonResponse
      */
-    public function deleteKey($redisKey)
-    {
-        $msg = '删除成功';
-        try {
-            Redis::del($redisKey);
-            $status = 'success';
-        } catch (Exception $exe) {
-            $msg = '删除失败';
-            $status = 'error';
-        }
-
-        return response()->json([
-            'data'   => [ 'redisKey' => $redisKey ],
-            'status' => $status,
-            'info'   => $msg
-        ]);
-    }
+    //public function deleteKey($redisKey)
+    //{
+    //    $msg = '删除成功';
+    //    try {
+    //        Redis::del($redisKey);
+    //        $status = 'success';
+    //    } catch (Exception $exe) {
+    //        $msg = '删除失败';
+    //        $status = 'error';
+    //    }
+    //
+    //    return response()->json([
+    //        'data'   => [ 'redisKey' => $redisKey ],
+    //        'status' => $status,
+    //        'info'   => $msg
+    //    ]);
+    //}
 
 
     /**
@@ -104,19 +98,21 @@ class IndexController extends BaseController
      *
      * @return array
      */
-    protected function getAllKeysAndValue()
-    {
-        $keys = Redis::keys('*');
-
-        $returnData = [];
-        foreach ($keys as $k => $v) {
-
-
-            $returnData[$v] = $this->getValueByKey($v);
-        }
-
-        return $returnData;
-    }
+    //protected function getAllKeysAndValue()
+    //{
+    //    $keys = Redis::keys('*');
+    //
+    //    //$redis = new Redis();
+    //
+    //    $returnData = [];
+    //    foreach ($keys as $k => $v) {
+    //
+    //
+    //        $returnData[$v] = $this->getValueByKey($v);
+    //    }
+    //
+    //    return $returnData;
+    //}
 
 
     /**
@@ -125,24 +121,24 @@ class IndexController extends BaseController
      * @param $key
      * @return bool|string
      */
-    protected function getValueByKey($key)
-    {
-        $type = Redis::type($key);
-
-        switch ($type) {
-            case 'string' :
-                $value = Redis::get($key);
-                break;
-            case 'zset' :
-                $arr = Redis::zScan($key, null);
-                $value = implode(',', $arr[1]);
-                break;
-            default :
-                $value = '';
-        }
-
-        return $value;
-    }
+    //protected function getValueByKey($key)
+    //{
+    //    $type = Redis::type($key);
+    //
+    //    switch ($type) {
+    //        case 'string' :
+    //            $value = Redis::get($key);
+    //            break;
+    //        case 'zset' :
+    //            $arr = Redis::zScan($key, null);
+    //            $value = implode(',', $arr[1]);
+    //            break;
+    //        default :
+    //            $value = '';
+    //    }
+    //
+    //    return $value;
+    //}
 
     /**
      * 清除数据库

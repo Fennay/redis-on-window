@@ -7,26 +7,44 @@
  */
 
 
-if(!function_exists('getRedisTypeAndLabelByKey')) {
+if (!function_exists('redisTypeSwitch')) {
     /**
-     *
-     * 通过key获取type以及label
-     *
-     * @param $key
+     * 数字转换成字符串
+     * @param $type
      * @return string
+     * @author: Fengguangyong
      */
-    function getRedisTypeByKey($key)
+    function redisTypeSwitch($type)
     {
-        $type = Redis::type($key);
+        //$arr = [
+        //    1 => 'string',
+        //    2 => 'set',
+        //    3 => 'list',
+        //    4 => 'zset',
+        //    5 => 'hash',
+        //    6 => 'other',
+        //];
+        //
+        //return $arr[$type];
+
         switch ($type) {
-            case 'string' :
+            case '1' :
                 $str = '<span class="label label-sm label-success label-mini"> String </span>';
                 break;
-            case 'zset' :
+            case '2' :
+                $str = '<span class="label label-sm label-warning label-mini"> Set </span>';
+                break;
+            case '3' :
+                $str = '<span class="label label-sm label-warning label-mini"> List </span>';
+                break;
+            case '4' :
                 $str = '<span class="label label-sm label-warning label-mini"> Zset </span>';
                 break;
+            case '5' :
+                $str = '<span class="label label-sm label-warning label-mini"> Hash </span>';
+                break;
             default :
-                $str = '<span class="label label-sm label-success label-mini"> Pending </span>';
+                $str = '<span class="label label-sm label-success label-mini"> Other </span>';
         }
 
         return $str;
@@ -34,7 +52,7 @@ if(!function_exists('getRedisTypeAndLabelByKey')) {
 }
 
 
-if(!function_exists('getRedisTtlByKey')) {
+if (!function_exists('getRedisTtlByKey')) {
     /**
      * 获得key的过期时间
      * @param $key

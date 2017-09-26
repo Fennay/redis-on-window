@@ -15,7 +15,10 @@ Route::get('/', [
     'as' => 'default.index',
     'uses' => 'IndexController@index'
 ]);
-
+Route::any('selectRedis/{redisName}', [
+    'as' => 'selectRedis',
+    'uses' => 'IndexController@selectRedis'
+]);
 
 Route::get('selectDB/{dbIndex}', [
     'as' => 'selectDB',
