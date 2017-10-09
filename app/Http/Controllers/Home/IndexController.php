@@ -12,7 +12,6 @@ namespace App\Http\Controllers\Home;
 use App\Traits\CommonResponse;
 use Redis;
 use Exception;
-use Predis\Connection\ConnectionException;
 use App\Service\RedisService;
 
 class IndexController extends BaseController
@@ -21,7 +20,6 @@ class IndexController extends BaseController
 
     public function __construct() {
 
-        //$this->redisObj = new RedisService();
     }
 
 
@@ -53,6 +51,14 @@ class IndexController extends BaseController
 
         return $this->ajaxSuccess('获取成功',$keys);
     }
+
+
+
+    public function getRedisValueByKey($key)
+    {
+        return $this->ajaxSuccess('获取成功');
+    }
+
 
     /**
      * 选择数据库

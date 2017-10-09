@@ -34,8 +34,6 @@
                                 @foreach($redisList as $k => $v)
                                     <li>
                                         <a href="javascript:;" onclick="selectRedis('{{$k}}')">{{$v['title']}}</a>
-                                        {{--<a href="{{route('selectDB',['dbIndex' => mb_substr($k,2,2)])}}"--}}
-                                        {{--title="查看keys">{{$k}}</a>--}}
                                         <a href="javascript:;" title="清空数据库"><i
                                                     class="glyphicon glyphicon-trash"></i></a>
                                     </li>
@@ -119,6 +117,30 @@
                         html += '<a href="javascript:;" onclick="showValue()" class="list-group-item">'
                              + data[i]['type'] +
                              '&nbsp;<span class="label label-sm label-danger label-mini"> ' + data[i]['key'] + ' </span>&nbsp; \
+                             </a>';
+                    }
+                }
+
+
+                $('#redisKeys').html(html);
+            }
+        });
+    }
+
+    function getRedisValueByKey(key){
+        $.ajax({
+            type: "post",
+            url: "{{route('selectRedis',['redisName' => ''])}}" + '/' + redisName,
+            dataType: "json",
+            success: function (j) {
+
+                if(j.status == 'success'){
+                    var data = j.data;
+                    var html = '';
+                    for (var i in data) {
+                        html += '<a href="javascript:;" onclick="showValue()" class="list-group-item">'
+                            + data[i]['type'] +
+                            '&nbsp;<span class="label label-sm label-danger label-mini"> ' + data[i]['key'] + ' </span>&nbsp; \
                              </a>';
                     }
                 }
