@@ -7,26 +7,15 @@
  */
 
 
-if (!function_exists('redisTypeSwitch')) {
+if (!function_exists('redisTypeSwitchWithCss')) {
     /**
      * 数字转换成字符串
      * @param $type
      * @return string
      * @author: Fengguangyong
      */
-    function redisTypeSwitch($type)
+    function redisTypeSwitchWithCss($type)
     {
-        //$arr = [
-        //    1 => 'string',
-        //    2 => 'set',
-        //    3 => 'list',
-        //    4 => 'zset',
-        //    5 => 'hash',
-        //    6 => 'other',
-        //];
-        //
-        //return $arr[$type];
-
         switch ($type) {
             case '1' :
                 $str = '<span class="label label-sm label-success label-mini"> String </span>';
@@ -48,6 +37,28 @@ if (!function_exists('redisTypeSwitch')) {
         }
 
         return $str;
+    }
+}
+
+if (!function_exists('redisTypeSwitch')) {
+    /**
+     * 数字转换成字符串
+     * @param $type
+     * @return string
+     * @author: Fengguangyong
+     */
+    function redisTypeSwitch($type)
+    {
+        $arr = [
+            1 => 'string',
+            2 => 'set',
+            3 => 'list',
+            4 => 'zset',
+            5 => 'hash',
+            6 => 'other',
+        ];
+
+        return $arr[$type];
     }
 }
 

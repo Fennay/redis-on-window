@@ -18,10 +18,12 @@ class IndexController extends BaseController
 {
     use CommonResponse;
 
-    public function __construct() {
+    protected $redisObj;
 
+    public function __construct()
+    {
+        $this->redisObj = new RedisService();
     }
-
 
 
     public function index()
@@ -29,9 +31,8 @@ class IndexController extends BaseController
         $redisList = config('redis')['redis'];
         unset($redisList['client']);
 
-
         return view('home.index', [
-             'redisList' => $redisList,
+            'redisList' => $redisList,
         ]);
     }
 
@@ -46,23 +47,34 @@ class IndexController extends BaseController
         $redisList = config('redis')['redis'];
         $redisOption = $redisList[$redisName];
 
-        $redis = new RedisService($redisOption);
-        $keys = $redis->getAllKeysAndType();
+        //$this->redisObj = new RedisService($redisOption);
+        try{
+            $this->redisObj = new RedisService($redisOption);
+        }catch (Exception $exe){
+            return $this->ajaxError($exe->getMessage());
+        }
+        $keys = $this->redisObj->getAllKeysAndType();
 
-        return $this->ajaxSuccess('获取成功',$keys);
+        return $this->ajaxSuccess('获取成功', $keys);
     }
 
 
-
+    /**
+     * 根据key获取值
+     * @param $key
+     * @return \Illuminate\Http\JsonResponse
+     * @author: Fengguangyong
+     */
     public function getRedisValueByKey($key)
     {
-        return $this->ajaxSuccess('获取成功');
+        $value = $this->redisObj->getValueByKey($key);
+
+        return $this->ajaxSuccess('获取成功', ['value' => $value]);
     }
 
 
     /**
      * 选择数据库
-     *
      * @param $dbIndex
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
@@ -76,7 +88,6 @@ class IndexController extends BaseController
 
     /**
      * 通过redisKey删除数据
-     *
      * @param $redisKey
      * @return \Illuminate\Http\JsonResponse
      */
@@ -101,7 +112,6 @@ class IndexController extends BaseController
 
     /**
      * 获取所有的key和值
-     *
      * @return array
      */
     //protected function getAllKeysAndValue()
@@ -123,7 +133,6 @@ class IndexController extends BaseController
 
     /**
      * 通过redisKey获取值
-     *
      * @param $key
      * @return bool|string
      */
@@ -148,7 +157,6 @@ class IndexController extends BaseController
 
     /**
      * 清除数据库
-     *
      * @param $dbNum
      * @return \Illuminate\Http\JsonResponse
      */
@@ -174,7 +182,6 @@ class IndexController extends BaseController
 
     /**
      * 清除整个redis
-     *
      * @return \Illuminate\Http\JsonResponse
      */
     public function flushAll()

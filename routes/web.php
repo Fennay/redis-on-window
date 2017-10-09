@@ -33,6 +33,11 @@ Route::delete('flushDB/{dbNum}',[
     'as' => 'flushDB',
     'uses' => 'IndexController@flushDB'
 ]);
+// 获取值
+Route::get('getRedisValueByKey/{key}',[
+    'as' => 'getRedisValueByKey',
+    'uses' => 'IndexController@getRedisValueByKey'
+]);
 
 
 Route::get('/test','IndexController@test');

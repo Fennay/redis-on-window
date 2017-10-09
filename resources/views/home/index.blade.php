@@ -90,8 +90,11 @@
     $(redisValue).css('height', $('.redis-key').css('height'))
 
 
-    function showValue() {
-        $(redisValue).show();
+    function showValue(key) {
+        getRedisValueByKey(key);
+        setTimeout(function () {
+            $(redisValue).show();
+        },1000);
     }
 
     /**
@@ -110,43 +113,33 @@
             dataType: "json",
             success: function (j) {
 
-                if(j.status == 'success'){
+                if (j.status == 'success') {
                     var data = j.data;
                     var html = '';
                     for (var i in data) {
-                        html += '<a href="javascript:;" onclick="showValue()" class="list-group-item">'
-                             + data[i]['type'] +
-                             '&nbsp;<span class="label label-sm label-danger label-mini"> ' + data[i]['key'] + ' </span>&nbsp; \
-                             </a>';
-                    }
-                }
-
-
-                $('#redisKeys').html(html);
-            }
-        });
-    }
-
-    function getRedisValueByKey(key){
-        $.ajax({
-            type: "post",
-            url: "{{route('selectRedis',['redisName' => ''])}}" + '/' + redisName,
-            dataType: "json",
-            success: function (j) {
-
-                if(j.status == 'success'){
-                    var data = j.data;
-                    var html = '';
-                    for (var i in data) {
-                        html += '<a href="javascript:;" onclick="showValue()" class="list-group-item">'
+                        html += '<a href="javascript:;" onclick="showValue(\'' + data[i]['key'] + '\')" class="list-group-item">'
                             + data[i]['type'] +
                             '&nbsp;<span class="label label-sm label-danger label-mini"> ' + data[i]['key'] + ' </span>&nbsp; \
                              </a>';
                     }
+                    $('#redisKeys').html(html);
                 }
 
+            }
+        });
+    }
 
-                $('#redisKeys').html(html);
+    function getRedisValueByKey(key) {
+        $.ajax({
+            type: "get",
+            url: "{{route('getRedisValueByKey',['key' => ''])}}" + '/' + key,
+            dataType: "json",
+            success: function (j) {
+                if (j.status == 'success') {
+                    var value = j.data.value;
+                    $('.redis-content').html(value);
+                }
+
             }
         });
     }
